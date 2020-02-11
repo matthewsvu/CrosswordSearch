@@ -12,58 +12,93 @@ Goal of program to a create a word search program that will find a word within t
 
 #include <iostream>
 #include <vector>
-#include <fstream>
-#include <cstdlib>
+#include <fstream> // for ifstream
+#include <cstdlib> // for c_str() to read filenames
 
-int HEIGHT = 0;
-int WIDTH = 0;
+int MATRIX_HEIGHT = 0;
+int MATRIX_WIDTH = 0;
 
 using namespace std;
 
-vector <vector<char> > createMatrix() {
-    vector <vector<char> > tempMatrix;
+// Creates the matrix
+vector<vector<char> > createMatrix(ifstream &sinput)
+{
+    vector<vector<char> > tempMatrix(MATRIX_HEIGHT, vector<char> (MATRIX_WIDTH, 'a'));
+    for(int i = 0; i < MATRIX_HEIGHT; i++)
+    {
+        for(int j = 0; j < MATRIX_WIDTH; j++)
+        {
+            sinput >> tempMatrix[i][j];
+        }
+    }
+    return tempMatrix;
+} // end createMatrix
+// opens file, checks if opened, gets the width and height and then create a matrix
+vector<vector <char> > setupPuzzle()
+{
+    vector<vector <char> > newMatrix;
     ifstream sinput;
     string filename = "testTxt.txt";
     sinput.open(filename.c_str());
 
-    if (sinput.good()){ //then the file opened just fine
-        sinput >> HEIGHT >> WIDTH;
-        for(int i = 0; i < HEIGHT; i++) {
-            for(int j = 0; j < WIDTH; j++) {
-                sinput >> tempMatrix[i][j];
-            }
-        }
-        sinput.close();
+    if (sinput.is_open())   // the file opened just fine
+    {
+        // debug code cout << "Opened, current height is " << HEIGHT << endl;
+        sinput >> MATRIX_HEIGHT >> MATRIX_WIDTH;
+        // debug code cout << "Curr height/width after reading it in is: " << HEIGHT << " " << WIDTH << endl;
+        newMatrix = createMatrix(sinput); // passes in the ifstream so that file can be continue to be read
+        sinput.close(); // closes ifstream
     }
-    else {
-        cout << "File did not open" << endl;
+    else
+    { // error checking
+        cout << "File '" << filename << "' did not open." << endl;
         exit(0);
     }
-    return tempMatrix;
-}
-void renderMatrix(vector<vector<char> > currVect) {
-    for(int height = 0; height < HEIGHT; height++) {
-            for(int width = 0; width < WIDTH; width++) {
-                cout << currVect[height][width] << " ";
-            }
-            cout << endl;
+    return newMatrix;
+} // end setupPuzzle
+// output the matrix for testing and debugging
+void renderMatrix(vector<vector<char> > &currVect)
+{
+    for(int height = 0; height < MATRIX_HEIGHT; height++)
+    {
+        for(int width = 0; width < MATRIX_WIDTH; width++)
+        {
+            cout << currVect[height][width] << " ";
         }
-}
-vector <vector<char> > searchMatrix (int height, int width) {
+        cout << endl;
+    }
+} // end renderMatrix
+vector <vector<string> > searchMatrix (int height, int width)
+{
 
-}
+} // end searchMatrix
+// checks for the surrounding 8 indices around the cell, also makes sure we don't go out of bounds of the vector
+vector <vector<string> > checkNeighbors(vector<vector <char> > puzzle, int currHeight, int currWidth)
+{
+    for(int height = currHeight - 1; height < currHeight + 2; height++){
+        if(height < 0 || height >= MATRIX_HEIGHT) { // check to see if we go out of bounds
+            continue;
+        }
+        for(int width = currWidth - 1; width < currWidth + 2; width++) {
+            if(width < 0 || width >= MATRIX_WIDTH) { // checks for out of bounds
+                continue;
+            }
+            if(width == currWidth && height == currHeight) { // make sure we're not including ourselves
+                continue;
+            }
+            // if(puzzle[height][width] == ") think on this later
+        }
+    }
+} // end checkNeighbors
 
-vector <vector<char> > checkNeighbors(int currHeight, int currWidth) {
+vector <vector<string> > continueCheck(int currHeight, int currWidth)
+{
 
-}
-
-vector <vector<char> > continueCheck(int currHeight, int currWidth) {
-
-}
+} // end continueCheck
 int main()
 {
-   vector<vector<char> > newMatrix = createMatrix();
+    // creates a board
+    vector<vector<char> > newMatrix = setupPuzzle();
     renderMatrix(newMatrix);
-    cout << "Hello world!" << endl;
     return 0;
 }
