@@ -17,7 +17,9 @@ Goal of program to a create a word search program that will find a word within t
         5. finished insertMovies
     Change log 2/12/20:
         1. added skipanycommentLines method
-        2. Crudely implemented continueCheck method, searches in one direction
+        2. Crudely implemented continueCheck method, searches in one direction, need to check for spaces in words
+        3. added directions integers
+        4.
 
     Notes:
         I need to figure out the logic of searching the vectors and finish the searchMovies function.
@@ -353,9 +355,9 @@ int findDirection(int currHeight, int currWidth, int oldMatrixHeight, int oldMat
 {
     int direction = 0;
     int m = currHeight - oldMatrixHeight;
-    // debug code cout << "This is m: " << m << endl;
+   cout << "This is m: " << m << endl;
     int n = currWidth - oldMatrixWidth;
-    // debug code cout << "This is n: " << n << endl;
+  cout << "This is n: " << n << endl;
     if(m == -1 && n == -1) // NorthWest
     {
         direction = NORTH_WEST;
@@ -451,26 +453,27 @@ bool findLocation(vector<vector<char> > puzzle, int currHeight, int currWidth)
 // loop through puzzle row by row until it finds a word
 void searchMatrix (vector<vector<char> > puzzle)
 {
-    bool notFound = false;
+    bool found = true;
     for(int height = 0; height < MATRIX_HEIGHT; height++)
     {
         for(int width = 0; width < MATRIX_WIDTH; width++)
         {
             if(findLocation(puzzle, height, width) == false)
             {
-                notFound == true;
+                found == false;
             }
         }
     }
-    if(notFound == false)
-    {
-        moviesNotFound.push_back(movieList[CURR_WORD_POS]);
+    if(!found) {
+      moviesNotFound.push_back(movieList[CURR_WORD_POS]);
     }
+
 } // end searchMatrix
 // print found word, their locations, and directions
 void printResults()
 {
     searchMovies();
+    cout << "Movie Locations: \n\n";
     for(int i = 0; i < locations.size(); i++) {
         for(int j = 0; j < locations[i].size(); j++) {
              cout << locations[i][j] << ",";
