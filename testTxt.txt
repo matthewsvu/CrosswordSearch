@@ -1,3 +1,14 @@
+# Here is the complete word search puzzle for the
+# Comedy Movies puzzle. Note that it is larger than
+# the file I distributed with the homework assignment,
+# so you should be able to find many more movies in this one.
+# You might test this file with your homework to see
+# what results you get. I believe you should find most of
+# the movies, but there are three that you won't find. The
+# "zzzzz" on is in there just for test purposes to see what
+# your program does when it can't find a particular movie.
+
+
 18 18
 SCFRBOBROBERTSLOKL
 TNLESREKCILSYTICRL
@@ -17,6 +28,8 @@ EUOUFMEMECOHETHEER
 SRMPARTRBTAROSAASV
 SLEISTOOTHERUTLESE
 NATTAHNAMSEYSLSSMY
+
+#Movie Titles to Search For
 ALL OF ME
 ANNIE HALL
 BABE
@@ -44,8 +57,10 @@ MALLRATS
 MANHATTAN
 MEATBALLS
 MOONSTRUCK
+NAPOLEAN DYNAMITE
 OH GOD
 PLAZA SUITE
+RAISING ARIZONA
 REPO MAN
 RUSHMORE
 SHREK
@@ -57,5 +72,12 @@ TOOTSIE
 TRADING PLACES
 UNCLE BUCK
 YES MAN
+
+#This movie won't be found.
 zzzz
+
+# And here's one little palindrome for testing. It's a movie
+# title not of a comedy but of a very famous robot movie.
+# Your program might find it twice depending
+# on whether you check for more than one existence of a movie.
 RUR

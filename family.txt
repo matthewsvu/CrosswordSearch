@@ -1,0 +1,34 @@
+15 15
+
+R A I M X U K O R U Z R Y Q Q 
+K E V V U B O S L R P Y R J N 
+J V D A V R A N N J M V V A A 
+D O T N A C L F M A N D R E W 
+X A D G A K A H S I F M J O X 
+C T N L Z M V O N K A Y X U I 
+T A K Y H C A V M R Y G V I P 
+K I H E U S J L I D L K M V J 
+S Y D F F S G C A G F W F J X 
+F G U Z S K Y Z M S N B G V E 
+H L D O G J T G V M O Y I D L 
+D E O V I A I T F N G R T B A 
+Y V L W V G K K C L A X Z Q J 
+U N N L O A S R Z T R H Q B S 
+Y P V Y O W F B I R D X M M G 
+
+ALEX
+ANDREW
+AVA
+CAT
+DOG
+DRAGONFLY
+FISH
+HELLO
+KANGAROO
+KOALA
+SALAMANDER
+VIRAT
+WOLF
+# should not be found
+MONSTER
+JOBLESS
