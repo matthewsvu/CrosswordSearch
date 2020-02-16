@@ -1,4 +1,7 @@
 /*
+Name: Matthew Vu
+Crossword search
+HW2-CS1337-Matthew-Vu
 Goal of program to a create a word search program that will find a word within the matrix.
     1. After finding the word return the column and row location and also return the direction that the word ends in.
     2. There will be two functions that will:
@@ -84,8 +87,7 @@ void setup()
     movieList.clear();
     moviesNotFound.clear();
     CURR_WORD_POS = 0; // sets it back to zero so that we read the matrix from the first letter again.
-}
-
+} // end setup
 void skipAnyCommentLines(ifstream &infile)
 {
     string textLine;
@@ -118,7 +120,7 @@ void insertMovies(ifstream &file)
         cout << movieList[i] << endl;
     }
     */
-}
+} // end insert movies
 // Search and print the vector of notFoundmovies. O(n)
 void printNotFound()
 {
@@ -129,7 +131,7 @@ void printNotFound()
     }
     cout << endl;
 } // end printNotFound
-// Creates the matrix
+// Creates the matrix and reads in data from input file
 vector<vector<char> > createMatrix(ifstream &sinput)
 {
     vector<vector<char> > tempMatrix(MATRIX_HEIGHT, vector<char> (MATRIX_WIDTH, 'a')); // initializes vector with 'a' in all locations
@@ -137,7 +139,7 @@ vector<vector<char> > createMatrix(ifstream &sinput)
     {
         for(int j = 0; j < MATRIX_WIDTH; j++)
         {
-            skipAnyCommentLines(sinput);
+            skipAnyCommentLines(sinput); // skips lines before reading in input.
             sinput >> tempMatrix[i][j];
         }
     }
@@ -609,7 +611,7 @@ void printLocations()
             }
         }
     }
-}
+} // end print locations
 // used to start the Puzzle
 void startPuzzleSolving()
 {
@@ -624,7 +626,7 @@ void startPuzzleSolving()
     }
     printNotFound();
     resetPuzzle(); // asks the user if they want to enter another puzzle
-}
+} // end startPzzleSolving
 // if the user wants to enter another word puzzle
 void resetPuzzle()
 {
@@ -643,7 +645,7 @@ void resetPuzzle()
         break;
     }
 
-}
+}// end resetPuzzle
 // main function
 int main()
 {
