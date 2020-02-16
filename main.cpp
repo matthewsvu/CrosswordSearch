@@ -19,7 +19,12 @@ Goal of program to a create a word search program that will find a word within t
         1. added skipanycommentLines method
         2. Crudely implemented continueCheck method, searches in one direction, need to check for spaces in words
         3. added directions integers
-        4.
+    Change log 2/14/20:
+        1. finished continueCheck method
+        2. finished findDirection and findLocation method
+        3. added functions for restarting the puzzle
+        4. Added ability to add another puzzle to solve
+        5. finished game.
 
     Notes:
         I need to figure out the logic of searching the vectors and finish the searchMovies function.
@@ -29,7 +34,9 @@ Goal of program to a create a word search program that will find a word within t
 /**
 MAJOR ADDITIONS AND KEY WORDS INCLUDE:
     1. Ability to enter another puzzle at the end
-    2.
+    2. Checked words by continuing in one direction till it hits a boundary or finds entire word
+    3. Used a giant switch statement for the continue checking direction function
+    4. NAME OF PUZZLE FILES ARE testPartial.txt and testTxt.txt AND family.txt ANOTHER crossword puzzle made on my own.
 **/
 
 #include <iostream>
@@ -101,10 +108,6 @@ void insertMovies(ifstream &file)
         while(getline(file, input)) // gets each line from the file
         {
             skipAnyCommentLines(file); // takes out comments and newlines
-         //   if(input.empty())   // checks if the line has any character or not, and restart the loop if it doesn't.
-           // {
-           //     continue;
-            //}
             movieList.push_back(input); // adds the movie to the list if it's a valid input
             // cout << input << " ";
         }
@@ -524,7 +527,6 @@ int findDirection(int neighborHeight, int neightborWidth, int currHeight, int cu
     }
     return direction;
 } // end findDirection
-// how am I going to set the direction of where the search is going.
 // checks for the surrounding 8 indices around the cell, also makes sure we don't go out of bounds of the vector
 bool checkNeighbors(vector<vector <char> > puzzle, int currHeight, int currWidth)
 {
