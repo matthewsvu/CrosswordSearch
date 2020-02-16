@@ -26,20 +26,28 @@ Goal of program to a create a word search program that will find a word within t
         I'm having trouble keeping it together i.e the logic. I may need to condense everything and encapsulate them.
 */
 
+/**
+MAJOR ADDITIONS AND KEY WORDS INCLUDE:
+    1. Ability to enter another puzzle at the end
+    2.
+**/
+
 #include <iostream>
 #include <vector>
 #include <fstream> // for ifstream
 #include <cstdlib> // for c_str() to read filenames
 
 using namespace std;
-
+// height and width that will be read from in the file
 int MATRIX_HEIGHT = 0;
 int MATRIX_WIDTH = 0;
+// this will be incremented whenever the matrix is done searching for a particular word
 int CURR_WORD_POS = 0;
-
+// used to help identify what letter we're currently on
 const int FIRST_LETTER = 0;
 const int SECOND_LETTER = 1;
 const int THIRD_LETTER = 2;
+// cases for directions
 const int NORTH_WEST = 1;
 const int NORTH = 2;
 const int NORTH_EAST = 3;
@@ -48,8 +56,8 @@ const int EAST = 5;
 const int SOUTH_WEST = 6;
 const int SOUTH = 7;
 const int SOUTH_EAST = 8;
-
-bool found = false;
+// bool that is set to true when a word is found
+bool wordFound = false;
 // List of movies intially
 vector <string> movieList;
 // list of movies not founds to be printed last
@@ -59,10 +67,13 @@ vector <vector<int> > locations;
 
 void resetPuzzle(); // will be called from start function
 // is called when the user wants to enter in another puzzle.
-void setup() {
+// resets all relevant variables, and clears screen
+void setup()
+{
     system("cls");
-    found = false;
-    // clears vectors of items.
+    // to make sure that an item is found straight off the bat
+    wordFound = false;
+    // clears all vectors of items.
     movieList.clear();
     moviesNotFound.clear();
     CURR_WORD_POS = 0; // sets it back to zero so that we read the matrix from the first letter again.
@@ -90,10 +101,10 @@ void insertMovies(ifstream &file)
         while(getline(file, input)) // gets each line from the file
         {
             skipAnyCommentLines(file); // takes out comments and newlines
-            if(input.empty())   // checks if the line has any character or not, and restart the loop if it doesn't.
-            {
-                continue;
-            }
+         //   if(input.empty())   // checks if the line has any character or not, and restart the loop if it doesn't.
+           // {
+           //     continue;
+            //}
             movieList.push_back(input); // adds the movie to the list if it's a valid input
             // cout << input << " ";
         }
@@ -130,15 +141,48 @@ vector<vector<char> > createMatrix(ifstream &sinput)
     cout << endl;
     return tempMatrix;
 } // end createMatrix
-// output the matrix to console for testing and debugging
+void drawTopOrBottomLine()
+{
+    for(int j = 0; j < MATRIX_WIDTH; j++)
+    {
+        cout << "-" << "  ";
+    }
+} // end drawTopOrBottomLine
+// draws a top border which helps user solve word puzzle on the x axis
+void createTopBorder()
+{
+    for(int rowNum = 1; rowNum <= MATRIX_WIDTH; rowNum++)
+    {
+        if(rowNum < 10)   // this is to fix formatting issues with the numbers when they become 10 or greater
+        {
+            cout << rowNum << "  ";
+        }
+        else   //
+        {
+            cout << rowNum << " ";
+        }
+    }
+    cout << endl;
+    // draws a dotted line.
+    drawTopOrBottomLine();
+    cout << endl;
+} // end createTopBorder
+// draws a border that helps user find the y values in the word search puzzle
+void createRightBorder(int currHeight)
+{
+    cout << "|" << currHeight;
+} // end createRightBorder
+// output the matrix to console for testing and debugging along with border
 void renderPuzzle(vector<vector<char> > &currVect)
 {
+    createTopBorder();
     for(int height = 0; height < MATRIX_HEIGHT; height++)
     {
         for(int width = 0; width < MATRIX_WIDTH; width++)
         {
-            cout << currVect[height][width] << " ";
+            cout << currVect[height][width] << "  ";
         }
+        createRightBorder(height+1);
         cout << endl;
     }
     cout << endl;
@@ -153,10 +197,12 @@ vector<vector <char> > setupPuzzle()
 
     cout << "What is the name of your file?\n";
     cin >> filename; // user input for filename
-    system("cls"); // clear screen
+
     while(true) // loop until valid filename is entered
     {
-        sinput.open(filename.c_str());
+        system("cls"); // clear screen
+
+        sinput.open(filename.c_str()); // open file
 
         if (sinput.is_open())   // the file opened just fine
         {
@@ -164,9 +210,9 @@ vector<vector <char> > setupPuzzle()
             // debug code cout << "Opened, current height is " << MATRIX_HEIGHT << endl;
             skipAnyCommentLines(sinput);
             sinput >> MATRIX_HEIGHT >> MATRIX_WIDTH; // read in height and width
-            cout << "Current height/width after reading it in is: " << MATRIX_HEIGHT << " " << MATRIX_WIDTH << endl << endl;
+            cout << "Num of Rows: " << MATRIX_HEIGHT << "\nNum of Columns: " << MATRIX_WIDTH << endl << endl;
             newPuzzle = createMatrix(sinput); // passes in the ifstream so that file can be continue to be read
-            renderPuzzle(newPuzzle); // outputs the puzzle
+            renderPuzzle(newPuzzle); // outputs the puzzle and borders
             insertMovies(sinput); // passes if stream so that movies can be added to a vector
             sinput.close(); // closes ifstream
             break;
@@ -177,7 +223,7 @@ vector<vector <char> > setupPuzzle()
             perror("");
             cout << "File '" << filename << "' could not be found or opened\n\n";
             cout << "Enter another file name to use (Or type 'quit')\n\n";
-            getline(cin, filename);
+            cin >> filename;
             if(filename != "quit")
             {
                 continue;
@@ -215,7 +261,7 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
                 currWidth--;
                 if(character == movieList[CURR_WORD_POS].size()) // means we've reached the end of the word and that it is found !!!
                 {
-                    found = true;
+                    wordFound = true;
                     cout << movieList[CURR_WORD_POS] << " found at " << oldHeight+1 << ", " << oldWidth+1 << ": (direction = NW)" << endl;
                     return true;
                 }
@@ -243,7 +289,7 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
                 if(character == movieList[CURR_WORD_POS].size()) // means word is found !!!
                 {
                     // outputs word, location (in human speak, i.e no 0 based numbers), and direction it is found
-                    found = true;
+                    wordFound = true;
                     cout << movieList[CURR_WORD_POS] << " found at " << oldHeight+1 << ", " << oldWidth+1 << ": (direction = N)" << endl;
                     return true;
                 }
@@ -272,7 +318,7 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
                 currWidth++;
                 if(character == movieList[CURR_WORD_POS].size()) // means word is found !!!
                 {
-                    found = true;
+                    wordFound = true;
                     cout << movieList[CURR_WORD_POS] << " found at " << oldHeight+1 << ", " << oldWidth+1 << ": (direction = NE)" << endl;
                     return true;
                 }
@@ -299,7 +345,7 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
                 currWidth--;
                 if(character == movieList[CURR_WORD_POS].size()) // means word is found !!!
                 {
-                    found = true;
+                    wordFound = true;
                     cout << movieList[CURR_WORD_POS] << " found at " << oldHeight+1 << ", " << oldWidth+1 << ": (direction = W)" << endl;
                     return true;
                 }
@@ -327,7 +373,7 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
                 currWidth++;
                 if(character == movieList[CURR_WORD_POS].size()) // means word is found !!!
                 {
-                    found = true;
+                    wordFound = true;
                     cout << movieList[CURR_WORD_POS] << " found at " << oldHeight+1 << ", " << oldWidth+1 << ": (direction = E)" << endl;
                     return true;
                 }
@@ -357,12 +403,12 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
                 currWidth--;
                 if(character == movieList[CURR_WORD_POS].size()) // means word is found !!!
                 {
-                    found = true;
+                    wordFound = true;
                     cout << movieList[CURR_WORD_POS] << " found at " << oldHeight+1 << ", " << oldWidth+1 << ": (direction = SW)" << endl;
                     return true;
                 }
             }
-            else // means we had a false positive
+            else // means we had a false positive so leave the function
             {
                 return false;
             }
@@ -385,12 +431,12 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
                 currHeight++;
                 if(character == movieList[CURR_WORD_POS].size()) // means word is found !!!
                 {
-                    found = true;
+                    wordFound = true;
                     cout << movieList[CURR_WORD_POS] << " found at " << oldHeight+1 << ", " << oldWidth+1 << ": (direction = S)" << endl;
                     return true;
                 }
             }
-            else // means we had a false positive
+            else // means we had a false positive so leave the function
             {
                 return false;
             }
@@ -407,19 +453,19 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
                 character++;
                 continue;
             }
-            if(movieList[CURR_WORD_POS][character] == puzzle[currHeight][currWidth]) // individual character of the word matches
+            if(movieList[CURR_WORD_POS][character] == puzzle[currHeight][currWidth]) // when individual character of the word matches the current location
             {
                 character++;
                 currHeight++;
                 currWidth++;
                 if(character == movieList[CURR_WORD_POS].size()) // means word is found !!!
                 {
-                    found = true;
+                    wordFound = true;
                     cout << movieList[CURR_WORD_POS] << " found at " << oldHeight+1 << ", " << oldWidth+1 << ": (direction = SE)" << endl;
                     return true;
                 }
             }
-            else // means we had a false positive
+            else // means we had a false positive so leave the function
             {
                 return false;
             }
@@ -430,12 +476,19 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
     return false;
 } // end continueCheck
 // I'm going to subtract the currHeight/Width by the currentHeight/Width to get the direction
-int findDirection(int currHeight, int currWidth, int oldMatrixHeight, int oldMatrixWidth)
+/*
+        |y-1, x-1|y-1, x|y-1, x + 1|
+        |y  , x-1|y  , x|y  , x + 1|
+        |y+1, x-1|y+1, x|y+1, x + 1|
+        example: we're at 15, 14 and we found a letter at 14, 14.
+        subtract the values from each other and we get 1,0 which is the direction we need to go
+*/
+int findDirection(int neighborHeight, int neightborWidth, int currHeight, int currWidth)
 {
     int direction = 0;
-    int m = currHeight - oldMatrixHeight;
+    int m = neighborHeight - currHeight;
     // cout << "This is m: " << m << endl;
-    int n = currWidth - oldMatrixWidth;
+    int n = neightborWidth - currWidth;
     //cout << "This is n: " << n << endl;
     if(m == -1 && n == -1) // NorthWest
     {
@@ -476,26 +529,26 @@ int findDirection(int currHeight, int currWidth, int oldMatrixHeight, int oldMat
 bool checkNeighbors(vector<vector <char> > puzzle, int currHeight, int currWidth)
 {
     int testInt = 0;
-    for(int height = currHeight - 1; height < currHeight + 2; height++)
+    for(int neighborHeight = currHeight - 1; neighborHeight < currHeight + 2; neighborHeight++)
     {
-        if(height < 0 || height >= MATRIX_HEIGHT)   // check to see if we go out of bounds
+        if(neighborHeight < 0 || neighborHeight >= MATRIX_HEIGHT)   // check to see if we go out of bounds
         {
             continue;
         }
-        for(int width = currWidth - 1; width < currWidth + 2; width++)
+        for(int neighborWidth = currWidth - 1; neighborWidth < currWidth + 2; neighborWidth++)
         {
-            if(width < 0 || width >= MATRIX_WIDTH)   // checks for out of bounds
+            if(neighborWidth < 0 || neighborWidth >= MATRIX_WIDTH)   // checks for out of bounds
             {
                 continue;
             }
-            if(width == currWidth && height == currHeight)   // make sure we're not including ourselves
+            if(neighborWidth == currWidth && neighborHeight == currHeight)   // make sure we're not checking the current positions
             {
                 continue;
             }
-            if(puzzle[height][width] == movieList[CURR_WORD_POS][SECOND_LETTER])   // if we find the 2nd letter, go in a straight line and search
+            if(puzzle[neighborHeight][neighborWidth] == movieList[CURR_WORD_POS][SECOND_LETTER])   // if we find the 2nd letter, go in a straight line and search till found/notFound
             {
-                int dir = findDirection(height, width, currHeight, currWidth); // finds the direction we're pointing to
-                if(continueCheck(puzzle, height, width, currHeight, currWidth, dir) == true)   // checks in that direction, returns true, else false
+                int dir = findDirection(neighborHeight, neighborWidth, currHeight, currWidth); // finds the direction we're going to search in
+                if(continueCheck(puzzle, neighborHeight, neighborWidth, currHeight, currWidth, dir) == true)   // checks in that direction, returns true, else false
                 {
                     return true; // means we found the word
                 }
@@ -505,8 +558,8 @@ bool checkNeighbors(vector<vector <char> > puzzle, int currHeight, int currWidth
     return false; // means no letter matching the 2nd letter in the word was found
 } // end checkNeighbors
 
-// will check for first letter, then checkneighbors for the second letter, then add them into
-bool findLocation(vector<vector<char> > puzzle, int currHeight, int currWidth)
+// will check for first letter, then checkneighbors for the second letter, then add them into vector of locations
+void findLocation(vector<vector<char> > puzzle, int currHeight, int currWidth)
 {
     bool locationFound = false;
     if(puzzle[currHeight][currWidth] == movieList[CURR_WORD_POS][FIRST_LETTER]) // see's if the first letter of the word is at the current location in the matrix
@@ -519,7 +572,6 @@ bool findLocation(vector<vector<char> > puzzle, int currHeight, int currWidth)
             location.push_back(currHeight+1); // height + 1 is the coordinates in human terms same for width + 1
             location.push_back(currWidth+1);
             locations.push_back(location); // adds y, x coordinates to a vector.
-            return true;
         }
     }
     //return false;
@@ -527,7 +579,6 @@ bool findLocation(vector<vector<char> > puzzle, int currHeight, int currWidth)
 // loop through puzzle row by row until it finds a word
 void searchMatrix (vector<vector<char> > puzzle)
 {
-
     for(int height = 0; height < MATRIX_HEIGHT; height++)
     {
         for(int width = 0; width < MATRIX_WIDTH; width++)
@@ -535,7 +586,8 @@ void searchMatrix (vector<vector<char> > puzzle)
             findLocation(puzzle, height, width);
         }
     }
-    if(found == false)
+    // if it reaches this point, then that means the word was not found. Add it to the list of movies not found
+    if(wordFound == false)
     {
         moviesNotFound.push_back(movieList[CURR_WORD_POS]);
     }
@@ -544,27 +596,28 @@ void searchMatrix (vector<vector<char> > puzzle)
 void printLocations()
 {
     cout << "Movie Locations: \n\n";
-    for(int i = 0; i < locations.size(); i++)
+    for(int height = 0; height < locations.size(); height++)
     {
-        for(int j = 0; j < locations[i].size(); j++)
+        for(int width = 0; width < locations[height].size(); width++)
         {
-            cout << locations[i][j] << ",";
-            if(j % 2 == 1)
+            cout << locations[height][width] << ",";
+            if(width % 2 == 1) // every odd number of times print a newline.. formatting
             {
                 cout << endl;
             }
         }
     }
 }
-// used to start the game
-void startGame()
+// used to start the Puzzle
+void startPuzzleSolving()
 {
 // creates a board, create a loop that can broken out of once game is finished to have choice for multiple
     vector <vector<char> > wordPuzzle = setupPuzzle();
+    cout << "Movies found: \n";
     for(int listPos = 0; listPos < movieList.size(); listPos++ )
     {
         searchMatrix(wordPuzzle); // search matrix for current word
-        found = false;
+        wordFound = false;
         CURR_WORD_POS += 1; // increments the movie position to check the next word
     }
     printNotFound();
@@ -576,22 +629,22 @@ void resetPuzzle()
     char resetKey;
     cout << "Do you want to enter another word puzzle? ('y' or 'n')\n";
     cin >> resetKey;
-    switch(resetKey)
+    switch(resetKey) // if yes will call startPuzzleSolving
     {
     case 'y':
         setup();
-        startGame();
+        startPuzzleSolving();
         break;
     default:
         cout << "Exiting program based on user choice...\n";
         exit(0);
-    break;
+        break;
     }
 
 }
-
+// main function
 int main()
 {
-    startGame();
+    startPuzzleSolving();
     return 0;
 }
