@@ -192,7 +192,6 @@ void renderPuzzle(vector<vector<char> > &currVect)
     }
     cout << endl;
 } // end renderMatrix
-
 // opens file, checks if opened, gets the width and height and then create a matrix
 vector<vector <char> > setupPuzzle()
 {
@@ -491,39 +490,39 @@ bool continueCheck(vector<vector<char> > puzzle, int currHeight, int currWidth, 
 int findDirection(int neighborHeight, int neightborWidth, int currHeight, int currWidth)
 {
     int direction = 0;
-    int m = neighborHeight - currHeight;
+    int directionY = neighborHeight - currHeight;
     // cout << "This is m: " << m << endl;
-    int n = neightborWidth - currWidth;
+    int directionX = neightborWidth - currWidth;
     //cout << "This is n: " << n << endl;
-    if(m == -1 && n == -1) // NorthWest
+    if(directionY == -1 && directionX == -1) // NorthWest
     {
         direction = NORTH_WEST;
     }
-    else if(m == -1 && n == 0) // North
+    else if(directionY == -1 && directionX == 0) // North
     {
         direction = NORTH;
     }
-    else if(m == -1 && n == 1) // NORTH EAST
+    else if(directionY == -1 && directionX == 1) // NORTH EAST
     {
         direction = NORTH_EAST;
     }
-    else if(m == 0 && n == -1) // WEST
+    else if(directionY == 0 && directionX == -1) // WEST
     {
         direction = WEST;
     }
-    else if(m == 0 && n == 1) // EAST
+    else if(directionY == 0 && directionX == 1) // EAST
     {
         direction = EAST;
     }
-    else if(m == 1 && n == -1) // SOUTHWEST
+    else if(directionY == 1 && directionX == -1) // SOUTHWEST
     {
         direction = SOUTH_WEST;
     }
-    else if(m == 1 && n == 0) // SOUTH
+    else if(directionY == 1 && directionX == 0) // SOUTH
     {
         direction = SOUTH;
     }
-    else if(m == 1 && n == 1) // SOUTH EAST
+    else if(directionY == 1 && directionX == 1) // SOUTH EAST
     {
         direction = SOUTH_EAST;
     }
